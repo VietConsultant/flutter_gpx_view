@@ -5,6 +5,16 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:xml/xml.dart' as xml;
 
+/// A widget to display GPX data on a map.
+/// The GPX data is passed as a string.
+/// The widget uses the [flutter_map](https://pub.dev/packages/flutter_map) package.
+/// The map tiles are provided by [OpenTopoMap](https://opentopomap.org).
+/// The GPX data is parsed using the [xml](https://pub.dev/packages/xml) package.
+/// [xml] is xml String parser for Dart.
+/// [polyColor] is the color of the polyline.
+/// [markerIcon] is the icon of the markers.
+/// [polyStrokeWidth] is the width of the polyline.
+/// [boundPadding] is the padding of the map bounds.
 class GpxView extends StatefulWidget {
   const GpxView({
     super.key,
