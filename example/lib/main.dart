@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gpx_view/flutter_gpx_view.dart';
+import 'package:flutter_gpx_view/flutter_gpx_chart.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,12 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: xml.isEmpty
           ? const SizedBox.shrink()
-          : SizedBox(
-              width: 300,
-              height: 200,
-              child: GpxView(
-                xml: xml,
-              ),
+          : GpxChart(
+              xml: xml,
             ),
     );
   }
