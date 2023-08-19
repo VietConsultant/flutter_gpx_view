@@ -1,22 +1,11 @@
-library flutter_gpx_view;
-
 import 'package:flutter/material.dart';
+import 'package:flutter_gpx_view/flutter_gpx_chart.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:xml/xml.dart' as xml;
 
-/// A widget to display GPX data on a map.
-/// The GPX data is passed as a string.
-/// The widget uses the [flutter_map](https://pub.dev/packages/flutter_map) package.
-/// The map tiles are provided by [OpenTopoMap](https://opentopomap.org).
-/// The GPX data is parsed using the [xml](https://pub.dev/packages/xml) package.
-/// [xml] is xml String parser for Dart.
-/// [polyColor] is the color of the polyline.
-/// [markerIcon] is the icon of the markers.
-/// [polyStrokeWidth] is the width of the polyline.
-/// [boundPadding] is the padding of the map bounds.
-class GpxView extends StatefulWidget {
-  const GpxView({
+class FlutterGpxView extends StatefulWidget {
+  const FlutterGpxView({
     super.key,
     required this.xml,
     this.polyColor = Colors.blueAccent,
@@ -35,12 +24,13 @@ class GpxView extends StatefulWidget {
   final EdgeInsets boundPadding;
 
   @override
-  State<GpxView> createState() => _GpxMapState();
+  State<FlutterGpxView> createState() => _FlutterGpxViewState();
 }
 
-class _GpxMapState extends State<GpxView> {
+class _FlutterGpxViewState extends State<FlutterGpxView> {
   late List<LatLng> trackPoints;
   late List<Marker> waypoints;
+  Marker? currentMarket;
 
   bool _loading = true;
 
@@ -48,6 +38,23 @@ class _GpxMapState extends State<GpxView> {
   void initState() {
     super.initState();
     loadGpxData();
+  }
+
+  void onPanChart(double lat, double lon) {
+    setState(() {
+      currentMarket = Marker(
+        point: LatLng(lat, lon),
+        builder: (_) => const Tooltip(
+          triggerMode: TooltipTriggerMode.tap,
+          message: 'Current Chart Position',
+          waitDuration: Duration(seconds: 5),
+          child: Icon(
+            Icons.location_on,
+            color: Colors.green,
+          ),
+        ),
+      );
+    });
   }
 
   Future<void> loadGpxData() async {
@@ -73,8 +80,8 @@ class _GpxMapState extends State<GpxView> {
     for (final wpt in wpts) {
       final lat = double.parse(wpt.getAttribute('lat')!);
       final lon = double.parse(wpt.getAttribute('lon')!);
-      final tooltipMsg = '${wpt.findElements('name').first.text}\n'
-          '${wpt.findElements('desc').first.text}';
+      final tooltipMsg = '${wpt.findElements('name').first.value}\n'
+          '${wpt.findElements('desc').first.value}';
       waypoints.add(
         Marker(
           point: LatLng(lat, lon),
@@ -99,31 +106,55 @@ class _GpxMapState extends State<GpxView> {
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : FlutterMap(
-            options: MapOptions(
-              center: trackPoints.first,
-              zoom: 10.0,
-              bounds: LatLngBounds.fromPoints(trackPoints),
-              boundsOptions: FitBoundsOptions(
-                padding: widget.boundPadding,
-              ),
-            ),
+        : Column(
             children: [
-              TileLayer(
-                urlTemplate: 'https://tile.opentopomap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-              ),
-              PolylineLayer(
-                polylines: [
-                  Polyline(
-                    points: trackPoints,
-                    strokeWidth: widget.polyStrokeWidth,
-                    color: widget.polyColor,
+              Expanded(
+                flex: 2,
+                child: FlutterMap(
+                  options: MapOptions(
+                    center: trackPoints.first,
+                    zoom: 10.0,
+                    bounds: LatLngBounds.fromPoints(trackPoints),
+                    boundsOptions: FitBoundsOptions(
+                      padding: widget.boundPadding,
+                    ),
                   ),
-                ],
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://tile.opentopomap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                    ),
+                    PolylineLayer(
+                      polylines: [
+                        Polyline(
+                          points: trackPoints,
+                          strokeWidth: widget.polyStrokeWidth,
+                          color: widget.polyColor,
+                        ),
+                      ],
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        ...waypoints,
+                        if (currentMarket != null) currentMarket!,
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              MarkerLayer(
-                markers: waypoints,
+              Expanded(
+                flex: 1,
+                child: Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                  ),
+                  child: GpxChart(
+                    xml: widget.xml,
+                    onChangePosition: onPanChart,
+                  ),
+                ),
               ),
             ],
           );
