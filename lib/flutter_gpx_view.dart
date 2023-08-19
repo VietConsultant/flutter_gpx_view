@@ -4,8 +4,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:xml/xml.dart' as xml;
 
-class FlutterGpxView extends StatefulWidget {
-  const FlutterGpxView({
+class GpxView extends StatefulWidget {
+  const GpxView({
     super.key,
     required this.xml,
     this.polyColor = Colors.blueAccent,
@@ -24,10 +24,10 @@ class FlutterGpxView extends StatefulWidget {
   final EdgeInsets boundPadding;
 
   @override
-  State<FlutterGpxView> createState() => _FlutterGpxViewState();
+  State<GpxView> createState() => _GpxViewState();
 }
 
-class _FlutterGpxViewState extends State<FlutterGpxView> {
+class _GpxViewState extends State<GpxView> {
   late List<LatLng> trackPoints;
   late List<Marker> waypoints;
   Marker? currentMarket;

@@ -54,7 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
       //   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       //   title: Text(widget.title),
       // ),
-      body: xml.isEmpty ? const SizedBox.shrink() : FlutterGpxView(xml: xml),
+      body: xml.isEmpty
+          ? const SizedBox.shrink()
+          : GpxView(
+              xml: xml,
+            ),
     );
   }
 }
