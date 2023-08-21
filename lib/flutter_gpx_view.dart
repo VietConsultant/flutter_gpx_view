@@ -31,7 +31,6 @@ class _GpxViewState extends State<GpxView> {
   late List<LatLng> trackPoints;
   late List<Marker> waypoints;
   Marker? currentMarket;
-
   bool _loading = true;
 
   @override
@@ -109,7 +108,7 @@ class _GpxViewState extends State<GpxView> {
         : Column(
             children: [
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: FlutterMap(
                   options: MapOptions(
                     center: trackPoints.first,
@@ -143,17 +142,17 @@ class _GpxViewState extends State<GpxView> {
                   ],
                 ),
               ),
-              Expanded(
-                flex: 1,
-                child: Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                  ),
-                  child: GpxChart(
-                    xml: widget.xml,
-                    onChangePosition: onPanChart,
-                  ),
+              Container(
+                height: MediaQuery.sizeOf(context).height * 0.3,
+                color: Colors.black,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 18,
+                  horizontal: 12,
+                ),
+                child: GpxChart(
+                  xml: widget.xml,
+                  onChangePosition: onPanChart,
+                  showTotal: true,
                 ),
               ),
             ],
