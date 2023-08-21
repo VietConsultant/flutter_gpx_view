@@ -11,11 +11,13 @@ class GpxLineChart extends StatefulWidget {
     required this.elevations,
     required this.gpxSacs,
     required this.gpxSacsY,
+    this.showAxis = true,
   });
   final List<GpxPeak> elevations;
   final List<GpxSac> gpxSacs;
   final List<GpxSac> gpxSacsY;
   final Function(double, double)? onChangePosition;
+  final bool showAxis;
 
   @override
   State<GpxLineChart> createState() => _GpxLineChartState();
@@ -90,7 +92,7 @@ class _GpxLineChartState extends State<GpxLineChart> {
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               reservedSize: 44,
-              showTitles: true,
+              showTitles: widget.showAxis,
               getTitlesWidget: (value, meta) {
                 return SideTitleWidget(
                   axisSide: meta.axisSide,
@@ -108,7 +110,7 @@ class _GpxLineChartState extends State<GpxLineChart> {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               reservedSize: 30,
-              showTitles: true,
+              showTitles: widget.showAxis,
               getTitlesWidget: (value, meta) {
                 if (widget.gpxSacsY
                     .where(

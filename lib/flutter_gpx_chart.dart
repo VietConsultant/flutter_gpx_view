@@ -290,6 +290,7 @@ class _GpxChartState extends State<GpxChart> {
                 gpxSacs: gpxSacs,
                 gpxSacsY: gpxSacsY,
                 onChangePosition: widget.onChangePosition,
+                showAxis: widget.showTotal,
               );
   }
 }
