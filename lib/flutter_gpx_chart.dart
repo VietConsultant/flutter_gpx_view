@@ -1,10 +1,8 @@
 library flutter_gpx_view;
 
-import 'dart:math';
-
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gpx_view/gpx_chart_model.dart';
+import 'package:flutter_gpx_view/gpx_line_chart.dart';
 import 'package:flutter_gpx_view/gpx_model.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:xml/xml.dart' as xml;
@@ -35,11 +33,7 @@ class _GpxChartState extends State<GpxChart> {
   List<GpxPeak> markers = [];
   bool overlayShowed = false;
   OverlayEntry? overlayEntry;
-  Map<String, double> total = {
-    '4': 1234,
-    '5': 1234,
-    '6': 1234,
-  };
+  Map<String, double> total = {};
 
   Map<String, String> totalTooltips = {
     '1':
@@ -55,12 +49,6 @@ class _GpxChartState extends State<GpxChart> {
     '6':
         'Trail: Climbing up to second grade<br/>Terrain: Often very exposed, precarious jagged rocks, glacier with danger to slip and fall<br/><strong>Requirements:</strong><br/><ul><li>Mature alpine experience</li><li>Familiarity with the handling of technical alpine equipment</li></ul>',
   };
-
-  List<Color> chartColor = [
-    const Color(0xFFCD2913),
-    const Color(0xFF985E1E),
-    const Color(0xFF746624),
-  ];
 
   Color getColorBySacScaleLevel(
     String t,
@@ -185,24 +173,6 @@ class _GpxChartState extends State<GpxChart> {
     });
   }
 
-  String _toolTipTitle(int index) {
-    final String elevation = elevations[index].ele.toStringAsFixed(2);
-    final int matchedIndex = gpxSacs.indexWhere(
-      (element) =>
-          int.parse(element.end) >= index && int.parse(element.start) <= index,
-    );
-    if (matchedIndex != -1) {
-      final gpxSac = gpxSacs[matchedIndex];
-      return 'Height: $elevation\n'
-          'Sac scale: ${gpxSac.t}\n'
-          'Via ferrata scale: ${gpxSac.f}\n'
-          'Visibility: ${gpxSac.v}\n'
-          'Surface: ${gpxSac.s}';
-    } else {
-      return '';
-    }
-  }
-
   void _showOverlay(BuildContext context, {required String text}) async {
     final OverlayState overlayState = Overlay.of(context);
     if (overlayShowed) {
@@ -259,195 +229,67 @@ class _GpxChartState extends State<GpxChart> {
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: LineChart(
-                  LineChartData(
-                    backgroundColor: Colors.black,
-                    gridData: const FlGridData(
-                      show: true,
+        : (widget.showTotal)
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: GpxLineChart(
+                      elevations: elevations,
+                      gpxSacs: gpxSacs,
+                      gpxSacsY: gpxSacsY,
+                      onChangePosition: widget.onChangePosition,
                     ),
-                    minY: elevations.map((e) => e.ele).reduce(min) - 20,
-                    maxX: elevations.length.toDouble(),
-                    maxY: elevations.map((e) => e.ele).reduce(max) + 50,
-                    borderData: FlBorderData(
-                      show: true,
-                      border: Border.all(
-                        color: Colors.transparent,
-                      ),
-                    ),
-                    titlesData: FlTitlesData(
-                      topTitles: const AxisTitles(),
-                      rightTitles: const AxisTitles(),
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          reservedSize: 44,
-                          showTitles: true,
-                          getTitlesWidget: (value, meta) {
-                            return SideTitleWidget(
-                              axisSide: meta.axisSide,
-                              child: Text(
-                                meta.formattedValue,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          reservedSize: 30,
-                          showTitles: true,
-                          getTitlesWidget: (value, meta) {
-                            if (gpxSacsY
-                                .where(
-                                  (element) =>
-                                      double.parse(element.end) ~/ 100 ==
-                                      value ~/ 100,
-                                )
-                                .isNotEmpty) {
-                              final GpxSac gpxSacY = gpxSacsY.firstWhere(
-                                (element) =>
-                                    double.parse(element.end) ~/ 100 ==
-                                    value ~/ 100,
-                              );
-                              return Text(
-                                '${gpxSacY.dist}km',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
-                              );
-                            }
-                            return const Text(
-                              '',
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    lineTouchData: LineTouchData(
-                      enabled: true,
-                      touchCallback: (event, response) {
-                        if (response == null) {
-                          return;
-                        }
-                        if (response.lineBarSpots == null) {
-                          return;
-                        }
-                        final GpxPeak peak =
-                            elevations[response.lineBarSpots!.first.x.toInt()];
-                        widget.onChangePosition?.call(peak.lat, peak.lon);
-                      },
-                      touchTooltipData: LineTouchTooltipData(
-                        maxContentWidth: 200,
-                        getTooltipItems: (touchedSpots) {
-                          return touchedSpots
-                              .map(
-                                (e) => LineTooltipItem(
-                                  _toolTipTitle(
-                                    e.spotIndex.toInt(),
-                                  ),
-                                  Theme.of(context).textTheme.bodyMedium!,
-                                ),
-                              )
-                              .toList();
-                        },
-                      ),
-                    ),
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: elevations
-                            .asMap()
-                            .keys
-                            .map(
-                              (key) => FlSpot(
-                                key.toDouble(),
-                                double.parse(
-                                  elevations[key].ele.toStringAsFixed(2),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                        isCurved: true,
-                        isStrokeCapRound: true,
-                        dotData: FlDotData(
-                          show: true,
-                          getDotPainter: (spot, xPercentage, bar, index) {
-                            final int matchedIndex = gpxSacs.indexWhere(
-                              (element) =>
-                                  int.parse(element.end) >= spot.x &&
-                                  int.parse(element.start) <= spot.x,
-                            );
-                            return FlDotCrossPainter(
-                              color: getColorBySacScaleLevel(
-                                gpxSacs[matchedIndex].t,
-                              ),
-                              size: 3,
-                            );
-                          },
-                        ),
-                        belowBarData: BarAreaData(
-                          show: true,
-                          gradient: LinearGradient(
-                            colors: chartColor,
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
-                ),
-              ),
-              if (widget.showTotal)
-                SizedBox(
-                  width: double.infinity,
-                  height: 30,
-                  child: Center(
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      children: [
-                        ...total.keys.map(
-                          (e) => InkWell(
-                            onTap: () => _showOverlay(context, text: e),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 2,
-                              ),
-                              margin: const EdgeInsets.only(
-                                bottom: 8,
-                                right: 4,
-                                left: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                  12,
-                                ),
-                                color: getColorBySacScaleLevel(e),
-                              ),
-                              child: Text(
-                                '${(total[e] ?? 0) / 1000}km',
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12,
+                  if (widget.showTotal)
+                    SizedBox(
+                      width: double.infinity,
+                      height: 30,
+                      child: Center(
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          children: [
+                            ...total.keys.map(
+                              (e) => InkWell(
+                                onTap: () => _showOverlay(context, text: e),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 2,
+                                  ),
+                                  margin: const EdgeInsets.only(
+                                    bottom: 8,
+                                    right: 4,
+                                    left: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                      12,
+                                    ),
+                                    color: getColorBySacScaleLevel(e),
+                                  ),
+                                  child: Text(
+                                    '${(total[e] ?? 0) / 1000}km',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 12,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                )
-            ],
-          );
+                      ),
+                    )
+                ],
+              )
+            : GpxLineChart(
+                elevations: elevations,
+                gpxSacs: gpxSacs,
+                gpxSacsY: gpxSacsY,
+                onChangePosition: widget.onChangePosition,
+              );
   }
 }
