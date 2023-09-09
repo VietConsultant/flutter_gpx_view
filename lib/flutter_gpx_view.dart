@@ -246,7 +246,7 @@ class _GpxViewState extends State<GpxView> {
                                     Container(
                                       height:
                                           MediaQuery.sizeOf(context).height *
-                                              0.3,
+                                              0.25,
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 12,
                                       ),
