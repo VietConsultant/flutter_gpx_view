@@ -154,11 +154,9 @@ class _GpxViewState extends State<GpxView> {
             child: Stack(
               children: [
                 SizedBox(
-                  height:
-                      //  _showChart
-                      //     ? MediaQuery.sizeOf(context).height * 0.8
-                      //     :
-                      MediaQuery.sizeOf(context).height,
+                  height: _showChart
+                      ? MediaQuery.sizeOf(context).height * 0.8
+                      : MediaQuery.sizeOf(context).height,
                   child: FlutterMap(
                     mapController: _mapController,
                     options: MapOptions(
