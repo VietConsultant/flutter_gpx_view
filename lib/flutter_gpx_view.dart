@@ -148,72 +148,70 @@ class _GpxViewState extends State<GpxView> {
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : ColoredBox(
-            color: Colors.black,
+        : Container(
+            height: MediaQuery.sizeOf(context).height,
+            color: Colors.white,
             child: Stack(
               children: [
-                Column(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: FlutterMap(
-                        mapController: _mapController,
-                        options: MapOptions(
-                          // center: trackPoints.last,
-                          zoom: 10.0,
-                          bounds: LatLngBounds.fromPoints(trackPoints),
-                          boundsOptions: FitBoundsOptions(
-                            padding: widget.boundPadding,
-                          ),
-                        ),
-                        children: [
-                          _showSatelliteMap
-                              ? TileLayer(
-                                  wmsOptions: WMSTileLayerOptions(
-                                    baseUrl:
-                                        'https://{s}.s2maps-tiles.eu/wms/?',
-                                    layers: const ['s2cloudless-2021_3857'],
-                                  ),
-                                  subdomains: const [
-                                    'a',
-                                    'b',
-                                    'c',
-                                    'd',
-                                    'e',
-                                    'f',
-                                    'g',
-                                    'h'
-                                  ],
-                                  userAgentPackageName:
-                                      'dev.fleaflet.flutter_map.example',
-                                )
-                              : TileLayer(
-                                  urlTemplate:
-                                      'https://tile.opentopomap.org/{z}/{x}/{y}.png',
-                                  userAgentPackageName:
-                                      'dev.fleaflet.flutter_map.example',
-                                ),
-                          PolylineLayer(
-                            polylines: [
-                              Polyline(
-                                points: trackPoints,
-                                strokeWidth: widget.polyStrokeWidth,
-                                color: widget.polyColor,
+                SizedBox(
+                  height: _showChart
+                      ? MediaQuery.sizeOf(context).height * 0.8
+                      : MediaQuery.sizeOf(context).height,
+                  child: FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      // center: trackPoints.last,
+                      zoom: 10.0,
+                      bounds: LatLngBounds.fromPoints(trackPoints),
+                      boundsOptions: FitBoundsOptions(
+                        padding: widget.boundPadding,
+                      ),
+                    ),
+                    children: [
+                      _showSatelliteMap
+                          ? TileLayer(
+                              wmsOptions: WMSTileLayerOptions(
+                                baseUrl: 'https://{s}.s2maps-tiles.eu/wms/?',
+                                layers: const ['s2cloudless-2021_3857'],
                               ),
-                            ],
-                          ),
-                          MarkerLayer(
-                            markers: [
-                              ...waypoints,
-                              if (currentMarker != null) currentMarker!,
-                              if (_currentPositionMarker != null)
-                                _currentPositionMarker!,
-                            ],
+                              subdomains: const [
+                                'a',
+                                'b',
+                                'c',
+                                'd',
+                                'e',
+                                'f',
+                                'g',
+                                'h'
+                              ],
+                              userAgentPackageName:
+                                  'dev.fleaflet.flutter_map.example',
+                            )
+                          : TileLayer(
+                              urlTemplate:
+                                  'https://tile.opentopomap.org/{z}/{x}/{y}.png',
+                              userAgentPackageName:
+                                  'dev.fleaflet.flutter_map.example',
+                            ),
+                      PolylineLayer(
+                        polylines: [
+                          Polyline(
+                            points: trackPoints,
+                            strokeWidth: widget.polyStrokeWidth,
+                            color: widget.polyColor,
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      MarkerLayer(
+                        markers: [
+                          ...waypoints,
+                          if (currentMarker != null) currentMarker!,
+                          if (_currentPositionMarker != null)
+                            _currentPositionMarker!,
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 Positioned(
                   bottom: 0,
@@ -228,36 +226,52 @@ class _GpxViewState extends State<GpxView> {
                       },
                       child: Container(
                         width: MediaQuery.sizeOf(context).width,
-                        color: Colors.white,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24),
+                          ),
+                        ),
                         child: SafeArea(
                           top: false,
                           child: Center(
                             child: AnimatedCrossFade(
                               firstChild: Container(
                                 width: MediaQuery.sizeOf(context).width,
-                                color: Colors.white,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    CloseButton(
-                                      onPressed: _closeChart,
-                                    ),
-                                    Container(
-                                      height:
-                                          MediaQuery.sizeOf(context).height *
-                                              0.25,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                      ),
-                                      child: GpxChart(
-                                        xml: widget.xml,
-                                        onChangePosition: onPanChart,
-                                        showTotal: true,
-                                      ),
-                                    ),
-                                  ],
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(24),
+                                    topRight: Radius.circular(24),
+                                  ),
                                 ),
+                                child: _showChart
+                                    ? Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          CloseButton(
+                                            onPressed: _closeChart,
+                                          ),
+                                          Container(
+                                            height: MediaQuery.sizeOf(context)
+                                                    .height *
+                                                0.25,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                            ),
+                                            child: GpxChart(
+                                              xml: widget.xml,
+                                              onChangePosition: onPanChart,
+                                              showTotal: true,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : const SizedBox.shrink(),
                               ),
                               secondChild: IconButton(
                                 onPressed: _openChart,
