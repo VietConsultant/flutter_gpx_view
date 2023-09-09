@@ -73,13 +73,13 @@ class _GpxLineChartState extends State<GpxLineChart> {
   Widget build(BuildContext context) {
     return LineChart(
       LineChartData(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         gridData: const FlGridData(
           show: true,
         ),
-        minY: widget.elevations.map((e) => e.ele).reduce(min) - 20,
+        minY: widget.elevations.map((e) => e.ele).reduce(min),
         maxX: widget.elevations.length.toDouble(),
-        maxY: widget.elevations.map((e) => e.ele).reduce(max) + 50,
+        maxY: widget.elevations.map((e) => e.ele).reduce(max) + 100,
         borderData: FlBorderData(
           show: true,
           border: Border.all(
@@ -100,7 +100,7 @@ class _GpxLineChartState extends State<GpxLineChart> {
                     meta.formattedValue,
                     style: const TextStyle(
                       fontSize: 12,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                 );
@@ -126,7 +126,7 @@ class _GpxLineChartState extends State<GpxLineChart> {
                     '${gpxSacY.dist}km',
                     style: const TextStyle(
                       fontSize: 12,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   );
                 }

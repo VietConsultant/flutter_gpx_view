@@ -122,6 +122,14 @@ class _GpxMapState extends State<GpxMap> {
             ),
             children: [
               TileLayer(
+                wmsOptions: WMSTileLayerOptions(
+                  baseUrl: 'https://{s}.s2maps-tiles.eu/wms/?',
+                  layers: const ['s2cloudless-2021_3857'],
+                ),
+                subdomains: const ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+                userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+              ),
+              TileLayer(
                 urlTemplate: 'https://tile.opentopomap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'dev.fleaflet.flutter_map.example',
               ),

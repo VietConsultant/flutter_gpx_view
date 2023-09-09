@@ -28,6 +28,12 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Gpx needs access to your location for delivery</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Gpx needs access to location when in the background</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Gpx needs location access for car booking and express delivery</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

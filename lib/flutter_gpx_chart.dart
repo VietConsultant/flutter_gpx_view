@@ -29,7 +29,7 @@ class _GpxChartState extends State<GpxChart> {
   late List<Gpx> trackPoints;
   List<GpxPeak> elevations = [];
   final List<GpxSac> gpxSacs = [];
-  final List<GpxSac> gpxSacsY = [];
+  List<GpxSac> gpxSacsY = [];
   List<GpxPeak> markers = [];
   bool overlayShowed = false;
   OverlayEntry? overlayEntry;
@@ -142,9 +142,12 @@ class _GpxChartState extends State<GpxChart> {
     }
     markers = statistics.peak;
 
-    for (var i = 1; i < gpxSacs.length; i++) {
-      if (i % 7 == 0) {
-        debugPrint('$i');
+    for (var i = 0; i < gpxSacs.length; i++) {
+      if (gpxSacsY.isNotEmpty) {
+        if (gpxSacsY.last.end != gpxSacs[i].start) {
+          gpxSacsY.add(gpxSacs[i]);
+        }
+      } else {
         gpxSacsY.add(gpxSacs[i]);
       }
       total[gpxSacs[i].t] = (total[gpxSacs[i].t] ?? 0) +
@@ -153,6 +156,10 @@ class _GpxChartState extends State<GpxChart> {
           );
     }
 
+    gpxSacsY = gpxSacsY.sublist(
+      (gpxSacsY.length ~/ 2) - 2,
+      (gpxSacsY.length ~/ 2) + 4,
+    );
     // final extensions = document.findAllElements('extensions');
     // for each track point
     for (final trkpt in trkpts) {
@@ -167,7 +174,6 @@ class _GpxChartState extends State<GpxChart> {
         ),
       );
     }
-    debugPrint(elevations.length.toString());
     setState(() {
       _loading = false;
     });

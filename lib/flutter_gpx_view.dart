@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gpx_view/flutter_gpx_chart.dart';
+import 'package:flutter_gpx_view/location_service.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:xml/xml.dart' as xml;
@@ -30,8 +31,13 @@ class GpxView extends StatefulWidget {
 class _GpxViewState extends State<GpxView> {
   late List<LatLng> trackPoints;
   late List<Marker> waypoints;
-  Marker? currentMarket;
+  Marker? currentMarker;
+  Marker? _currentPositionMarker;
   bool _loading = true;
+  bool _showChart = true;
+  bool _showSatelliteMap = false;
+  LocationService locationService = LocationServiceImpl();
+  final MapController _mapController = MapController();
 
   @override
   void initState() {
@@ -41,7 +47,7 @@ class _GpxViewState extends State<GpxView> {
 
   void onPanChart(double lat, double lon) {
     setState(() {
-      currentMarket = Marker(
+      currentMarker = Marker(
         point: LatLng(lat, lon),
         builder: (_) => const Tooltip(
           triggerMode: TooltipTriggerMode.tap,
@@ -52,6 +58,44 @@ class _GpxViewState extends State<GpxView> {
             color: Colors.green,
           ),
         ),
+      );
+    });
+  }
+
+  void _closeChart() {
+    setState(() {
+      _showChart = false;
+    });
+  }
+
+  void _openChart() {
+    setState(() {
+      _showChart = true;
+    });
+  }
+
+  void _onTapCurrentLocation() {
+    locationService.determinePosition().then((currentPosition) {
+      setState(() {
+        _currentPositionMarker = Marker(
+          point: LatLng(currentPosition.latitude, currentPosition.longitude),
+          builder: (_) => const Tooltip(
+            triggerMode: TooltipTriggerMode.tap,
+            message: 'Current User Position',
+            waitDuration: Duration(seconds: 5),
+            child: Icon(
+              Icons.location_on,
+              color: Colors.red,
+            ),
+          ),
+        );
+      });
+      _mapController.move(
+        LatLng(
+          currentPosition.latitude,
+          currentPosition.longitude,
+        ),
+        11,
       );
     });
   }
@@ -93,7 +137,6 @@ class _GpxViewState extends State<GpxView> {
         ),
       );
     }
-
     setState(() {
       _loading = false;
     });
@@ -105,57 +148,199 @@ class _GpxViewState extends State<GpxView> {
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : Column(
-            children: [
-              Expanded(
-                flex: 3,
-                child: FlutterMap(
-                  options: MapOptions(
-                    center: trackPoints.first,
-                    zoom: 10.0,
-                    bounds: LatLngBounds.fromPoints(trackPoints),
-                    boundsOptions: FitBoundsOptions(
-                      padding: widget.boundPadding,
-                    ),
-                  ),
+        : ColoredBox(
+            color: Colors.black,
+            child: Stack(
+              children: [
+                Column(
                   children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://tile.opentopomap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-                    ),
-                    PolylineLayer(
-                      polylines: [
-                        Polyline(
-                          points: trackPoints,
-                          strokeWidth: widget.polyStrokeWidth,
-                          color: widget.polyColor,
+                    Expanded(
+                      flex: 3,
+                      child: FlutterMap(
+                        mapController: _mapController,
+                        options: MapOptions(
+                          // center: trackPoints.last,
+                          zoom: 10.0,
+                          bounds: LatLngBounds.fromPoints(trackPoints),
+                          boundsOptions: FitBoundsOptions(
+                            padding: widget.boundPadding,
+                          ),
                         ),
-                      ],
-                    ),
-                    MarkerLayer(
-                      markers: [
-                        ...waypoints,
-                        if (currentMarket != null) currentMarket!,
-                      ],
+                        children: [
+                          _showSatelliteMap
+                              ? TileLayer(
+                                  wmsOptions: WMSTileLayerOptions(
+                                    baseUrl:
+                                        'https://{s}.s2maps-tiles.eu/wms/?',
+                                    layers: const ['s2cloudless-2021_3857'],
+                                  ),
+                                  subdomains: const [
+                                    'a',
+                                    'b',
+                                    'c',
+                                    'd',
+                                    'e',
+                                    'f',
+                                    'g',
+                                    'h'
+                                  ],
+                                  userAgentPackageName:
+                                      'dev.fleaflet.flutter_map.example',
+                                )
+                              : TileLayer(
+                                  urlTemplate:
+                                      'https://tile.opentopomap.org/{z}/{x}/{y}.png',
+                                  userAgentPackageName:
+                                      'dev.fleaflet.flutter_map.example',
+                                ),
+                          PolylineLayer(
+                            polylines: [
+                              Polyline(
+                                points: trackPoints,
+                                strokeWidth: widget.polyStrokeWidth,
+                                color: widget.polyColor,
+                              ),
+                            ],
+                          ),
+                          MarkerLayer(
+                            markers: [
+                              ...waypoints,
+                              if (currentMarker != null) currentMarker!,
+                              if (_currentPositionMarker != null)
+                                _currentPositionMarker!,
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Container(
-                height: MediaQuery.sizeOf(context).height * 0.3,
-                color: Colors.black,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 18,
-                  horizontal: 12,
+                Positioned(
+                  bottom: 0,
+                  child: SafeArea(
+                    top: false,
+                    bottom: false,
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _showChart = true;
+                        });
+                      },
+                      child: Container(
+                        width: MediaQuery.sizeOf(context).width,
+                        color: Colors.white,
+                        child: SafeArea(
+                          top: false,
+                          child: Center(
+                            child: AnimatedCrossFade(
+                              firstChild: Container(
+                                width: MediaQuery.sizeOf(context).width,
+                                color: Colors.white,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    CloseButton(
+                                      onPressed: _closeChart,
+                                    ),
+                                    Container(
+                                      height:
+                                          MediaQuery.sizeOf(context).height *
+                                              0.3,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                      ),
+                                      child: GpxChart(
+                                        xml: widget.xml,
+                                        onChangePosition: onPanChart,
+                                        showTotal: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              secondChild: IconButton(
+                                onPressed: _openChart,
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_up_rounded,
+                                ),
+                              ),
+                              crossFadeState: _showChart
+                                  ? CrossFadeState.showFirst
+                                  : CrossFadeState.showSecond,
+                              duration: const Duration(
+                                milliseconds: 300,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                child: GpxChart(
-                  xml: widget.xml,
-                  onChangePosition: onPanChart,
-                  showTotal: true,
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 300),
+                  right: 12,
+                  top: 0,
+                  child: SafeArea(
+                    top: true,
+                    child: Column(
+                      children: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              50,
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black,
+                                offset: Offset(0, 4),
+                                blurRadius: 20,
+                                blurStyle: BlurStyle.inner,
+                              )
+                            ],
+                            color: Colors.white,
+                          ),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: _onTapCurrentLocation,
+                            icon: const Icon(Icons.gps_fixed),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              50,
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black,
+                                offset: Offset(0, 4),
+                                blurRadius: 20,
+                                blurStyle: BlurStyle.inner,
+                              )
+                            ],
+                            color: Colors.white,
+                          ),
+                          child: IconButton(
+                            splashColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              setState(() {
+                                _showSatelliteMap = !_showSatelliteMap;
+                              });
+                            },
+                            icon: const Icon(Icons.layers_sharp),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
   }
 }
