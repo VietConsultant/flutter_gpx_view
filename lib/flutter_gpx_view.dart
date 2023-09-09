@@ -154,13 +154,15 @@ class _GpxViewState extends State<GpxView> {
             child: Stack(
               children: [
                 SizedBox(
-                  height: _showChart
-                      ? MediaQuery.sizeOf(context).height * 0.8
-                      : MediaQuery.sizeOf(context).height,
+                  height:
+                      //  _showChart
+                      //     ? MediaQuery.sizeOf(context).height * 0.8
+                      //     :
+                      MediaQuery.sizeOf(context).height,
                   child: FlutterMap(
                     mapController: _mapController,
                     options: MapOptions(
-                      // center: trackPoints.last,
+                      center: trackPoints.last,
                       zoom: 10.0,
                       bounds: LatLngBounds.fromPoints(trackPoints),
                       boundsOptions: FitBoundsOptions(
@@ -214,77 +216,73 @@ class _GpxViewState extends State<GpxView> {
                   ),
                 ),
                 Positioned(
+                  left: 0,
                   bottom: 0,
-                  child: SafeArea(
-                    top: false,
-                    bottom: false,
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          _showChart = true;
-                        });
-                      },
-                      child: Container(
-                        width: MediaQuery.sizeOf(context).width,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(24),
-                            topRight: Radius.circular(24),
-                          ),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        _showChart = true;
+                      });
+                    },
+                    child: Container(
+                      width: MediaQuery.sizeOf(context).width,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
                         ),
-                        child: SafeArea(
-                          top: false,
-                          child: Center(
-                            child: AnimatedCrossFade(
-                              firstChild: Container(
-                                width: MediaQuery.sizeOf(context).width,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(24),
-                                    topRight: Radius.circular(24),
-                                  ),
-                                ),
-                                child: _showChart
-                                    ? Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          CloseButton(
-                                            onPressed: _closeChart,
-                                          ),
-                                          Container(
-                                            height: MediaQuery.sizeOf(context)
-                                                    .height *
-                                                0.25,
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                            ),
-                                            child: GpxChart(
-                                              xml: widget.xml,
-                                              onChangePosition: onPanChart,
-                                              showTotal: true,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : const SizedBox.shrink(),
-                              ),
-                              secondChild: IconButton(
-                                onPressed: _openChart,
-                                icon: const Icon(
-                                  Icons.keyboard_arrow_up_rounded,
+                      ),
+                      child: SafeArea(
+                        top: false,
+                        child: Center(
+                          child: AnimatedCrossFade(
+                            firstChild: Container(
+                              width: MediaQuery.sizeOf(context).width,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(24),
+                                  topRight: Radius.circular(24),
                                 ),
                               ),
-                              crossFadeState: _showChart
-                                  ? CrossFadeState.showFirst
-                                  : CrossFadeState.showSecond,
-                              duration: const Duration(
-                                milliseconds: 300,
+                              child: _showChart
+                                  ? Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        CloseButton(
+                                          onPressed: _closeChart,
+                                        ),
+                                        Container(
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.25,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
+                                          child: GpxChart(
+                                            xml: widget.xml,
+                                            onChangePosition: onPanChart,
+                                            showTotal: true,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+                            secondChild: IconButton(
+                              onPressed: _openChart,
+                              icon: const Icon(
+                                Icons.keyboard_arrow_up_rounded,
                               ),
+                            ),
+                            crossFadeState: _showChart
+                                ? CrossFadeState.showFirst
+                                : CrossFadeState.showSecond,
+                            duration: const Duration(
+                              milliseconds: 300,
                             ),
                           ),
                         ),
@@ -295,7 +293,7 @@ class _GpxViewState extends State<GpxView> {
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 300),
                   right: 12,
-                  top: 0,
+                  top: 24,
                   child: SafeArea(
                     top: true,
                     child: Column(

@@ -109,7 +109,7 @@ class _GpxLineChartState extends State<GpxLineChart> {
           ),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
-              reservedSize: 30,
+              reservedSize: 50,
               showTitles: widget.showAxis,
               getTitlesWidget: (value, meta) {
                 if (widget.gpxSacsY
@@ -122,11 +122,18 @@ class _GpxLineChartState extends State<GpxLineChart> {
                     (element) =>
                         double.parse(element.end) ~/ 100 == value ~/ 100,
                   );
-                  return Text(
-                    '${gpxSacY.dist}km',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
+                  return Transform.rotate(
+                    angle: -pi / 3,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Text(
+                        '${gpxSacY.dist}km',
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
                   );
                 }

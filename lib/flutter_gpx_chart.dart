@@ -156,12 +156,12 @@ class _GpxChartState extends State<GpxChart> {
           );
     }
 
-    gpxSacsY = gpxSacsY.sublist(
-      (gpxSacsY.length ~/ 2) - 2 < 0 ? 0 : (gpxSacsY.length ~/ 2) - 2,
-      (gpxSacsY.length ~/ 2) + 4 > gpxSacsY.length
-          ? gpxSacsY.length
-          : (gpxSacsY.length ~/ 2) + 4,
-    );
+    // gpxSacsY = gpxSacsY.sublist(
+    //   (gpxSacsY.length ~/ 2) - 2 < 0 ? 0 : (gpxSacsY.length ~/ 2) - 2,
+    //   (gpxSacsY.length ~/ 2) + 4 > gpxSacsY.length
+    //       ? gpxSacsY.length
+    //       : (gpxSacsY.length ~/ 2) + 4,
+    // );
     // final extensions = document.findAllElements('extensions');
     // for each track point
     for (final trkpt in trkpts) {
