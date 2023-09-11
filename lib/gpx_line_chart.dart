@@ -79,7 +79,8 @@ class _GpxLineChartState extends State<GpxLineChart> {
         ),
         minY: widget.elevations.map((e) => e.ele).reduce(min),
         maxX: widget.elevations.length.toDouble(),
-        maxY: widget.elevations.map((e) => e.ele).reduce(max) + 200,
+        maxY: widget.elevations.map((e) => e.ele).reduce(max) +
+            (widget.elevations.map((e) => e.ele).reduce(max)) / 5,
         borderData: FlBorderData(
           show: true,
           border: Border.all(
