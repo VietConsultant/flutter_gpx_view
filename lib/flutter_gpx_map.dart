@@ -128,10 +128,12 @@ class _GpxMapState extends State<GpxMap> {
                 ),
                 subdomains: const ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
                 userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               ),
               TileLayer(
                 urlTemplate: 'https://tile.opentopomap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               ),
               PolylineLayer(
                 polylines: [
