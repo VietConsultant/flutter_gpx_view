@@ -149,68 +149,75 @@ class _GpxViewState extends State<GpxView> {
             child: CircularProgressIndicator(),
           )
         : Container(
-            height: MediaQuery.sizeOf(context).height,
             color: Colors.white,
             child: Stack(
               children: [
-                SizedBox(
-                  height: _showChart
-                      ? MediaQuery.sizeOf(context).height * 0.8
-                      : MediaQuery.sizeOf(context).height,
-                  child: FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      center: trackPoints.last,
-                      zoom: 10.0,
-                      bounds: LatLngBounds.fromPoints(trackPoints),
-                      boundsOptions: FitBoundsOptions(
-                        padding: widget.boundPadding,
-                      ),
+                SafeArea(
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      bottom: _showChart
+                          ? (MediaQuery.sizeOf(context).height * 0.25)
+                          : 0,
                     ),
-                    children: [
-                      _showSatelliteMap
-                          ? TileLayer(
-                              wmsOptions: WMSTileLayerOptions(
-                                baseUrl: 'https://{s}.s2maps-tiles.eu/wms/?',
-                                layers: const ['s2cloudless-2021_3857'],
+                    child: FlutterMap(
+                      mapController: _mapController,
+                      options: MapOptions(
+                        center: trackPoints.last,
+                        zoom: 10.0,
+                        bounds: LatLngBounds.fromPoints(trackPoints),
+                        boundsOptions: FitBoundsOptions(
+                          padding: widget.boundPadding,
+                        ),
+                      ),
+                      children: [
+                        _showSatelliteMap
+                            ? TileLayer(
+                                wmsOptions: WMSTileLayerOptions(
+                                  baseUrl: 'https://{s}.s2maps-tiles.eu/wms/?',
+                                  layers: const ['s2cloudless-2021_3857'],
+                                ),
+                                subdomains: const [
+                                  'a',
+                                  'b',
+                                  'c',
+                                  'd',
+                                  'e',
+                                  'f',
+                                  'g',
+                                  'h'
+                                ],
+                                userAgentPackageName:
+                                    'dev.fleaflet.flutter_map.example',
+                                fallbackUrl:
+                                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              )
+                            : TileLayer(
+                                urlTemplate:
+                                    'https://tile.opentopomap.org/{z}/{x}/{y}.png',
+                                userAgentPackageName:
+                                    'dev.fleaflet.flutter_map.example',
+                                fallbackUrl:
+                                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                               ),
-                              subdomains: const [
-                                'a',
-                                'b',
-                                'c',
-                                'd',
-                                'e',
-                                'f',
-                                'g',
-                                'h'
-                              ],
-                              userAgentPackageName:
-                                  'dev.fleaflet.flutter_map.example',
-                            )
-                          : TileLayer(
-                              urlTemplate:
-                                  'https://tile.opentopomap.org/{z}/{x}/{y}.png',
-                              userAgentPackageName:
-                                  'dev.fleaflet.flutter_map.example',
+                        PolylineLayer(
+                          polylines: [
+                            Polyline(
+                              points: trackPoints,
+                              strokeWidth: widget.polyStrokeWidth,
+                              color: widget.polyColor,
                             ),
-                      PolylineLayer(
-                        polylines: [
-                          Polyline(
-                            points: trackPoints,
-                            strokeWidth: widget.polyStrokeWidth,
-                            color: widget.polyColor,
-                          ),
-                        ],
-                      ),
-                      MarkerLayer(
-                        markers: [
-                          ...waypoints,
-                          if (currentMarker != null) currentMarker!,
-                          if (_currentPositionMarker != null)
-                            _currentPositionMarker!,
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            ...waypoints,
+                            if (currentMarker != null) currentMarker!,
+                            if (_currentPositionMarker != null)
+                              _currentPositionMarker!,
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Positioned(
