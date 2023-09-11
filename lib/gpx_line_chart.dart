@@ -71,18 +71,21 @@ class _GpxLineChartState extends State<GpxLineChart> {
 
   @override
   Widget build(BuildContext context) {
+    final minY = widget.elevations.map((e) => e.ele).reduce(min);
+    final maxY = widget.elevations.map((e) => e.ele).reduce(max) +
+        (widget.elevations.map((e) => e.ele).reduce(max) -
+                widget.elevations.map((e) => e.ele).reduce(min)) /
+            4;
+    final maxX = widget.elevations.length.toDouble();
     return LineChart(
       LineChartData(
         backgroundColor: Colors.white,
         gridData: const FlGridData(
           show: true,
         ),
-        minY: widget.elevations.map((e) => e.ele).reduce(min),
-        maxX: widget.elevations.length.toDouble(),
-        maxY: widget.elevations.map((e) => e.ele).reduce(max) +
-            (widget.elevations.map((e) => e.ele).reduce(max) -
-                    widget.elevations.map((e) => e.ele).reduce(min)) /
-                4,
+        minY: minY,
+        maxX: maxX,
+        maxY: maxY,
         borderData: FlBorderData(
           show: true,
           border: Border.all(
@@ -94,13 +97,14 @@ class _GpxLineChartState extends State<GpxLineChart> {
           rightTitles: const AxisTitles(),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
-              reservedSize: 44,
+              reservedSize: 54,
               showTitles: widget.showAxis,
               getTitlesWidget: (value, meta) {
+                final bool hideLabel = value <= minY || value >= maxY;
                 return SideTitleWidget(
                   axisSide: meta.axisSide,
                   child: Text(
-                    meta.formattedValue,
+                    hideLabel ? '' : '${value.toInt()}m',
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.black,
