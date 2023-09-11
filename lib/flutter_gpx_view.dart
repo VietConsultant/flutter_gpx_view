@@ -193,7 +193,7 @@ class _GpxViewState extends State<GpxView> {
                               )
                             : TileLayer(
                                 urlTemplate:
-                                    'https://tile.opentopomap.org/{z}/{x}/{y}.png',
+                                    'https://maps.refuges.info/hiking/{z}/{x}/{y}.png',
                                 userAgentPackageName:
                                     'dev.fleaflet.flutter_map.example',
                                 fallbackUrl:
