@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ext="hiking-buddies"
-    xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"
-    version="1.1" creator="www.hiking-buddies.com">
+"<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="hiking-buddies" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="www.hiking-buddies.com">
     <metadata>
         <author>
             <email id="hikingbuddiesteam" domain="gmail.com" />
@@ -3890,58 +3889,32 @@
                     <ext:statistics ext:peak_height="1778.6737528913782"></ext:statistics>
                 </ext:hb>
                 <ext:hb>
-                    <ext:sac ext:S="-" ext:end="23" ext:start="0" ext:dist="254" ext:V="-" ext:T="0"
-                        ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="101" ext:start="23" ext:dist="872" ext:V="-"
-                        ext:T="1" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Gravel" ext:end="102" ext:start="101" ext:dist="10" ext:V="-"
-                        ext:T="1" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="103" ext:start="102" ext:dist="10" ext:V="-"
-                        ext:T="1" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Gravel" ext:end="105" ext:start="103" ext:dist="22" ext:V="-"
-                        ext:T="1" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="110" ext:start="105" ext:dist="54" ext:V="-"
-                        ext:T="1" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Gravel" ext:end="112" ext:start="110" ext:dist="23" ext:V="-"
-                        ext:T="1" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="128" ext:start="112" ext:dist="174" ext:V="-"
-                        ext:T="1" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="289" ext:start="128" ext:dist="1735" ext:V="-"
-                        ext:T="2" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Earth" ext:end="290" ext:start="289" ext:dist="11" ext:V="Bad"
-                        ext:T="3" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="543" ext:start="290" ext:dist="2684" ext:V="-"
-                        ext:T="2" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="772" ext:start="543" ext:dist="2414" ext:V="-"
-                        ext:T="3" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Paving stones" ext:end="773" ext:start="772" ext:dist="11"
-                        ext:V="Excellent" ext:T="2" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="781" ext:start="773" ext:dist="83" ext:V="-"
-                        ext:T="3" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="786" ext:start="781" ext:dist="53" ext:V="-"
-                        ext:T="2" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Paving stones" ext:end="790" ext:start="786" ext:dist="26"
-                        ext:V="-" ext:T="2" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Paving stones" ext:end="792" ext:start="790" ext:dist="21"
-                        ext:V="Good" ext:T="2" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="904" ext:start="792" ext:dist="1199" ext:V="-"
-                        ext:T="2" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="911" ext:start="904" ext:dist="74" ext:V="-"
-                        ext:T="1" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Fine gravel" ext:end="912" ext:start="911" ext:dist="10"
-                        ext:V="Excellent" ext:T="2" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="913" ext:start="912" ext:dist="11" ext:V="-"
-                        ext:T="1" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Fine gravel" ext:end="914" ext:start="913" ext:dist="10"
-                        ext:V="Excellent" ext:T="2" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="-" ext:end="917" ext:start="914" ext:dist="32" ext:V="-"
-                        ext:T="1" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Fine gravel" ext:end="1245" ext:start="917" ext:dist="3516"
-                        ext:V="Excellent" ext:T="2" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Ground" ext:end="1246" ext:start="1245" ext:dist="11" ext:V="-"
-                        ext:T="3" ext:F="-"></ext:sac>
-                    <ext:sac ext:S="Fine gravel" ext:end="1268" ext:start="1246" ext:dist="234"
-                        ext:V="Excellent" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="23" ext:start="0" ext:dist="254" ext:V="-" ext:T="0" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="101" ext:start="23" ext:dist="872" ext:V="-" ext:T="1" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Gravel" ext:end="102" ext:start="101" ext:dist="10" ext:V="-" ext:T="1" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="103" ext:start="102" ext:dist="10" ext:V="-" ext:T="1" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Gravel" ext:end="105" ext:start="103" ext:dist="22" ext:V="-" ext:T="1" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="110" ext:start="105" ext:dist="54" ext:V="-" ext:T="1" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Gravel" ext:end="112" ext:start="110" ext:dist="23" ext:V="-" ext:T="1" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="128" ext:start="112" ext:dist="174" ext:V="-" ext:T="1" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="289" ext:start="128" ext:dist="1735" ext:V="-" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Earth" ext:end="290" ext:start="289" ext:dist="11" ext:V="Bad" ext:T="3" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="543" ext:start="290" ext:dist="2684" ext:V="-" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="772" ext:start="543" ext:dist="2414" ext:V="-" ext:T="3" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Paving stones" ext:end="773" ext:start="772" ext:dist="11" ext:V="Excellent" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="781" ext:start="773" ext:dist="83" ext:V="-" ext:T="3" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="786" ext:start="781" ext:dist="53" ext:V="-" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Paving stones" ext:end="790" ext:start="786" ext:dist="26" ext:V="-" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Paving stones" ext:end="792" ext:start="790" ext:dist="21" ext:V="Good" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="904" ext:start="792" ext:dist="1199" ext:V="-" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="911" ext:start="904" ext:dist="74" ext:V="-" ext:T="1" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Fine gravel" ext:end="912" ext:start="911" ext:dist="10" ext:V="Excellent" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="913" ext:start="912" ext:dist="11" ext:V="-" ext:T="1" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Fine gravel" ext:end="914" ext:start="913" ext:dist="10" ext:V="Excellent" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="-" ext:end="917" ext:start="914" ext:dist="32" ext:V="-" ext:T="1" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Fine gravel" ext:end="1245" ext:start="917" ext:dist="3516" ext:V="Excellent" ext:T="2" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Ground" ext:end="1246" ext:start="1245" ext:dist="11" ext:V="-" ext:T="3" ext:F="-"></ext:sac>
+                    <ext:sac ext:S="Fine gravel" ext:end="1268" ext:start="1246" ext:dist="234" ext:V="Excellent" ext:T="2" ext:F="-"></ext:sac>
                 </ext:hb>
                 <ext:hb>
                     <ext:statistics ext:CS2="9503"></ext:statistics>
@@ -3950,10 +3923,9 @@
                     <ext:statistics ext:duration_hours="5"></ext:statistics>
                 </ext:hb>
                 <ext:hb>
-                    <ext:statistics
-                        ext:peaks="[{'lat': 47.612579, 'attr': {'ele': '1791', 'name': 'Heimgarten'}, 'waypoint_index': 528, 'name': 'Heimgarten', 'lon': 11.2806616}, {'lat': 47.6150365, 'attr': {'ele': '1640', 'name': 'Schlehdorfer Kreuz'}, 'waypoint_index': 696, 'name': 'Schlehdorfer Kreuz', 'lon': 11.2995496}, {'lat': 47.6134564, 'attr': {'ele': '1731', 'name': 'Herzogstand'}, 'waypoint_index': 780, 'name': 'Herzogstand', 'lon': 11.3084924}]"></ext:statistics>
+                    <ext:statistics ext:peaks="[{'lat': 47.612579, 'attr': {'ele': '1791', 'name': 'Heimgarten'}, 'waypoint_index': 528, 'name': 'Heimgarten', 'lon': 11.2806616}, {'lat': 47.6150365, 'attr': {'ele': '1640', 'name': 'Schlehdorfer Kreuz'}, 'waypoint_index': 696, 'name': 'Schlehdorfer Kreuz', 'lon': 11.2995496}, {'lat': 47.6134564, 'attr': {'ele': '1731', 'name': 'Herzogstand'}, 'waypoint_index': 780, 'name': 'Herzogstand', 'lon': 11.3084924}]"></ext:statistics>
                 </ext:hb>
             </extensions>
         </trkseg>
     </trk>
-</gpx>
+</gpx>"

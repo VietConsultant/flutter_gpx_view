@@ -77,8 +77,8 @@ class _GpxMapState extends State<GpxMap> {
     for (final wpt in wpts) {
       final lat = double.parse(wpt.getAttribute('lat')!);
       final lon = double.parse(wpt.getAttribute('lon')!);
-      final tooltipMsg = '${wpt.findElements('name').first.value}\n'
-          '${wpt.findElements('desc').first.value}';
+      final tooltipMsg = '${wpt.findElements('name').first.value ?? ''}\n'
+          '${wpt.findElements('desc').first.value ?? ''}';
       waypoints.add(
         Marker(
           point: LatLng(lat, lon),

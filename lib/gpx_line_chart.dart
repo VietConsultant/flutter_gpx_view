@@ -12,12 +12,14 @@ class GpxLineChart extends StatefulWidget {
     required this.gpxSacs,
     required this.gpxSacsY,
     this.showAxis = true,
+    required this.distances,
   });
   final List<GpxPeak> elevations;
   final List<GpxSac> gpxSacs;
   final List<GpxSac> gpxSacsY;
   final Function(double, double)? onChangePosition;
   final bool showAxis;
+  final List<double> distances;
 
   @override
   State<GpxLineChart> createState() => _GpxLineChartState();
@@ -52,7 +54,7 @@ class _GpxLineChartState extends State<GpxLineChart> {
   }
 
   String _toolTipTitle(int index) {
-    final String elevation = widget.elevations[index].ele.toStringAsFixed(2);
+    final String elevation = widget.elevations[index].ele.toStringAsFixed(0);
     final int matchedIndex = widget.gpxSacs.indexWhere(
       (element) =>
           int.parse(element.end) >= index && int.parse(element.start) <= index,
@@ -67,6 +69,11 @@ class _GpxLineChartState extends State<GpxLineChart> {
     } else {
       return '';
     }
+  }
+
+  String _getDistanceTitle(double distance) {
+    final RegExp regExp = RegExp(r'([.]*0)(?!.*\d)');
+    return '${distance.toStringAsFixed(1).replaceAll(regExp, '')}km';
   }
 
   @override
@@ -119,33 +126,23 @@ class _GpxLineChartState extends State<GpxLineChart> {
               reservedSize: 50,
               showTitles: widget.showAxis,
               getTitlesWidget: (value, meta) {
-                if (widget.gpxSacsY
-                    .where(
-                      (element) =>
-                          double.parse(element.end) ~/ 100 == value ~/ 100,
-                    )
-                    .isNotEmpty) {
-                  final GpxSac gpxSacY = widget.gpxSacsY.firstWhere(
-                    (element) =>
-                        double.parse(element.end) ~/ 100 == value ~/ 100,
-                  );
-                  return Transform.rotate(
-                    angle: -pi / 3,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: Text(
-                        '${gpxSacY.dist}km',
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
-                        ),
+                if (value == widget.distances.length) {
+                  return const Text('');
+                }
+
+                return Transform.rotate(
+                  angle: -pi / 3,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Text(
+                      _getDistanceTitle(widget.distances[value.toInt()]),
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
                       ),
                     ),
-                  );
-                }
-                return const Text(
-                  '',
+                  ),
                 );
               },
             ),

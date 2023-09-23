@@ -16,6 +16,7 @@ class GpxView extends StatefulWidget {
     ),
     this.polyStrokeWidth = 4.0,
     this.boundPadding = const EdgeInsets.all(20.0),
+    required this.distances,
   });
 
   final String xml;
@@ -23,6 +24,7 @@ class GpxView extends StatefulWidget {
   final Icon markerIcon;
   final double polyStrokeWidth;
   final EdgeInsets boundPadding;
+  final List<double> distances;
 
   @override
   State<GpxView> createState() => _GpxViewState();
@@ -49,13 +51,28 @@ class _GpxViewState extends State<GpxView> {
     setState(() {
       currentMarker = Marker(
         point: LatLng(lat, lon),
-        builder: (_) => const Tooltip(
+        builder: (_) => Tooltip(
           triggerMode: TooltipTriggerMode.tap,
           message: 'Current Chart Position',
-          waitDuration: Duration(seconds: 5),
-          child: Icon(
-            Icons.location_on,
-            color: Colors.green,
+          waitDuration: const Duration(seconds: 5),
+          child: Row(
+            children: [
+              Container(
+                height: 20,
+                width: 20,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blue.shade100,
+                ),
+                padding: const EdgeInsets.all(2),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -123,17 +140,24 @@ class _GpxViewState extends State<GpxView> {
     for (final wpt in wpts) {
       final lat = double.parse(wpt.getAttribute('lat')!);
       final lon = double.parse(wpt.getAttribute('lon')!);
-      final tooltipMsg = '${wpt.findElements('name').first.value}\n'
-          '${wpt.findElements('desc').first.value}';
+      final tooltipMsg = '${wpt.findElements('name').first.value ?? ''}\n'
+          '${wpt.findElements('desc').first.value ?? ''}';
       waypoints.add(
         Marker(
           point: LatLng(lat, lon),
-          builder: (_) => Tooltip(
-            triggerMode: TooltipTriggerMode.tap,
-            message: tooltipMsg,
-            waitDuration: const Duration(seconds: 5),
-            child: widget.markerIcon,
-          ),
+          builder: (_) => tooltipMsg == '\n'
+              ? Tooltip(
+                  triggerMode: TooltipTriggerMode.tap,
+                  message: '',
+                  waitDuration: const Duration(seconds: 5),
+                  child: widget.markerIcon,
+                )
+              : Tooltip(
+                  triggerMode: TooltipTriggerMode.tap,
+                  message: tooltipMsg,
+                  waitDuration: const Duration(seconds: 5),
+                  child: widget.markerIcon,
+                ),
         ),
       );
     }
@@ -151,6 +175,7 @@ class _GpxViewState extends State<GpxView> {
         : Container(
             color: Colors.white,
             child: Stack(
+              clipBehavior: Clip.none,
               children: [
                 SafeArea(
                   child: Container(
@@ -229,20 +254,14 @@ class _GpxViewState extends State<GpxView> {
                         _showChart = true;
                       });
                     },
-                    child: Container(
-                      width: MediaQuery.sizeOf(context).width,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
-                        ),
-                      ),
-                      child: SafeArea(
-                        top: false,
-                        child: Center(
-                          child: AnimatedCrossFade(
-                            firstChild: Container(
+                    child: AnimatedSize(
+                      curve: Curves.linear,
+                      duration: const Duration(milliseconds: 500),
+                      clipBehavior: Clip.none,
+                      reverseDuration: const Duration(milliseconds: 500),
+                      alignment: Alignment.bottomCenter,
+                      child: _showChart
+                          ? Container(
                               width: MediaQuery.sizeOf(context).width,
                               decoration: const BoxDecoration(
                                 color: Colors.white,
@@ -251,47 +270,66 @@ class _GpxViewState extends State<GpxView> {
                                   topRight: Radius.circular(24),
                                 ),
                               ),
-                              child: _showChart
-                                  ? Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        CloseButton(
-                                          onPressed: _closeChart,
-                                        ),
-                                        Container(
-                                          height: MediaQuery.sizeOf(context)
-                                                  .height *
+                              child: SafeArea(
+                                top: false,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    CloseButton(
+                                      onPressed: _closeChart,
+                                    ),
+                                    Container(
+                                      clipBehavior: Clip.none,
+                                      height:
+                                          MediaQuery.sizeOf(context).height *
                                               0.25,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                          ),
-                                          child: GpxChart(
-                                            xml: widget.xml,
-                                            onChangePosition: onPanChart,
-                                            showTotal: true,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : const SizedBox.shrink(),
-                            ),
-                            secondChild: IconButton(
-                              onPressed: _openChart,
-                              icon: const Icon(
-                                Icons.keyboard_arrow_up_rounded,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                      ),
+                                      child: GpxChart(
+                                        distances: widget.distances,
+                                        xml: widget.xml,
+                                        onChangePosition: onPanChart,
+                                        showTotal: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(
+                              width: MediaQuery.sizeOf(context).width,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(24),
+                                  topRight: Radius.circular(24),
+                                ),
+                              ),
+                              child: SafeArea(
+                                top: false,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      onPressed: _openChart,
+                                      icon: const Icon(
+                                        Icons.keyboard_arrow_up_rounded,
+                                      ),
+                                    ),
+                                    const Text(
+                                      'Show Elevation Profile',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            crossFadeState: _showChart
-                                ? CrossFadeState.showFirst
-                                : CrossFadeState.showSecond,
-                            duration: const Duration(
-                              milliseconds: 300,
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -356,6 +394,26 @@ class _GpxViewState extends State<GpxView> {
                     ),
                   ),
                 ),
+                // Align(
+                //   alignment: Alignment.bottomCenter,
+                //   child: _showChart
+                //       ? SafeArea(
+                //           child: Container(
+                //             width: MediaQuery.sizeOf(context).width,
+                //             height: MediaQuery.sizeOf(context).height * 0.25,
+                //             padding: const EdgeInsets.symmetric(
+                //               horizontal: 12,
+                //             ),
+                //             child: GpxChart(
+                //               distances: widget.distances,
+                //               xml: widget.xml,
+                //               onChangePosition: onPanChart,
+                //               showTotal: true,
+                //             ),
+                //           ),
+                //         )
+                //       : const SizedBox.shrink(),
+                // ),
               ],
             ),
           );

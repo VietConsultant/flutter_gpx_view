@@ -13,11 +13,13 @@ class GpxChart extends StatefulWidget {
     required this.xml,
     this.onChangePosition,
     this.showTotal = false,
+    required this.distances,
   });
 
   final String xml;
   final Function(double, double)? onChangePosition;
   final bool showTotal;
+  final List<double> distances;
 
   @override
   State<GpxChart> createState() => _GpxChartState();
@@ -181,6 +183,11 @@ class _GpxChartState extends State<GpxChart> {
     });
   }
 
+  String _getTotalString(double total) {
+    final RegExp regExp = RegExp(r'([.]*0)(?!.*\d)');
+    return '${(total / 1000).toStringAsFixed(2).replaceAll(regExp, '')}km';
+  }
+
   void _showOverlay(BuildContext context, {required String text}) async {
     final OverlayState overlayState = Overlay.of(context);
     if (overlayShowed) {
@@ -190,7 +197,7 @@ class _GpxChartState extends State<GpxChart> {
       builder: (context) {
         return Positioned(
           left: 12,
-          bottom: 60,
+          bottom: 70,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Material(
@@ -243,6 +250,7 @@ class _GpxChartState extends State<GpxChart> {
                 children: [
                   Expanded(
                     child: GpxLineChart(
+                      distances: widget.distances,
                       elevations: elevations,
                       gpxSacs: gpxSacs,
                       gpxSacsY: gpxSacsY,
@@ -264,7 +272,6 @@ class _GpxChartState extends State<GpxChart> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
-                                    vertical: 2,
                                   ),
                                   margin: const EdgeInsets.only(
                                     bottom: 8,
@@ -277,11 +284,13 @@ class _GpxChartState extends State<GpxChart> {
                                     ),
                                     color: getColorBySacScaleLevel(e),
                                   ),
-                                  child: Text(
-                                    '${(total[e] ?? 0) / 1000}km',
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 12,
+                                  child: Center(
+                                    child: Text(
+                                      _getTotalString(total[e]!),
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -294,6 +303,7 @@ class _GpxChartState extends State<GpxChart> {
                 ],
               )
             : GpxLineChart(
+                distances: widget.distances,
                 elevations: elevations,
                 gpxSacs: gpxSacs,
                 gpxSacsY: gpxSacsY,
