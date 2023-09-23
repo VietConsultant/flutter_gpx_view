@@ -96,13 +96,28 @@ class _GpxViewState extends State<GpxView> {
       setState(() {
         _currentPositionMarker = Marker(
           point: LatLng(currentPosition.latitude, currentPosition.longitude),
-          builder: (_) => const Tooltip(
+          builder: (_) => Tooltip(
             triggerMode: TooltipTriggerMode.tap,
             message: 'Current User Position',
-            waitDuration: Duration(seconds: 5),
-            child: Icon(
-              Icons.location_on,
-              color: Colors.red,
+            waitDuration: const Duration(seconds: 5),
+            child: Row(
+              children: [
+                Container(
+                  height: 20,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blue.shade100,
+                  ),
+                  padding: const EdgeInsets.all(2),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         );
