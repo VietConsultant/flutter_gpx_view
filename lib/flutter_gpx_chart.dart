@@ -201,18 +201,24 @@ class _GpxChartState extends State<GpxChart> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Material(
-              child: Container(
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  color: Colors.black87,
-                ),
-                width: MediaQuery.sizeOf(context).width - 24,
-                padding: const EdgeInsets.all(8),
-                child: HtmlWidget(
-                  totalTooltips[text] ?? '',
-                  textStyle: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
+              child: InkWell(
+                onTap: () {
+                  overlayEntry!.remove();
+                  overlayShowed = false;
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: Colors.black87,
+                  ),
+                  width: MediaQuery.sizeOf(context).width - 24,
+                  padding: const EdgeInsets.all(8),
+                  child: HtmlWidget(
+                    totalTooltips[text] ?? '',
+                    textStyle: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -224,18 +230,18 @@ class _GpxChartState extends State<GpxChart> {
 
     overlayState.insert(overlayEntry!);
     overlayShowed = true;
-    await Future.delayed(
-      const Duration(seconds: 3),
-    )
-        // removing overlay entry after stipulated time.
-        .whenComplete(
-      () => (overlayShowed)
-          ? {
-              overlayEntry!.remove(),
-              overlayShowed = false,
-            }
-          : null,
-    );
+    // await Future.delayed(
+    //   const Duration(seconds: 3),
+    // )
+    //     // removing overlay entry after stipulated time.
+    //     .whenComplete(
+    //   () => (overlayShowed)
+    //       ? {
+    //           overlayEntry!.remove(),
+    //           overlayShowed = false,
+    //         }
+    //       : null,
+    // );
   }
 
   @override
