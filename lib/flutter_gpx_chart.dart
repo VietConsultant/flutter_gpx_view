@@ -7,6 +7,8 @@ import 'package:flutter_gpx_view/gpx_model.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:xml/xml.dart' as xml;
 
+OverlayEntry? overlayEntry;
+
 class GpxChart extends StatefulWidget {
   const GpxChart({
     super.key,
@@ -34,7 +36,7 @@ class _GpxChartState extends State<GpxChart> {
   List<GpxSac> gpxSacsY = [];
   List<GpxPeak> markers = [];
   bool overlayShowed = false;
-  OverlayEntry? overlayEntry;
+
   Map<String, double> total = {};
 
   Map<String, String> totalTooltips = {
@@ -76,6 +78,7 @@ class _GpxChartState extends State<GpxChart> {
   @override
   void initState() {
     super.initState();
+    overlayEntry = null;
     loadGpxData();
   }
 
@@ -275,31 +278,33 @@ class _GpxChartState extends State<GpxChart> {
                             ...total.keys.map(
                               (e) => InkWell(
                                 onTap: () => _showOverlay(context, text: e),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                  ),
-                                  margin: const EdgeInsets.only(
-                                    bottom: 8,
-                                    right: 4,
-                                    left: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      12,
-                                    ),
-                                    color: getColorBySacScaleLevel(e),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      _getTotalString(total[e]!),
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
+                                child: totalTooltips[e] == null
+                                    ? const SizedBox.shrink()
+                                    : Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
+                                        margin: const EdgeInsets.only(
+                                          bottom: 8,
+                                          right: 4,
+                                          left: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          color: getColorBySacScaleLevel(e),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            _getTotalString(total[e]!),
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
                               ),
                             ),
                           ],

@@ -82,6 +82,9 @@ class _GpxViewState extends State<GpxView> {
   void _closeChart() {
     setState(() {
       _showChart = false;
+      if (overlayEntry != null) {
+        overlayEntry?.remove();
+      }
     });
   }
 
