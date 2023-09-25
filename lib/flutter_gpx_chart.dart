@@ -208,6 +208,7 @@ class _GpxChartState extends State<GpxChart> {
                 onTap: () {
                   overlayEntry!.remove();
                   overlayShowed = false;
+                  overlayEntry = null;
                 },
                 child: Container(
                   alignment: Alignment.center,
