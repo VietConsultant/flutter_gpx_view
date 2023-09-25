@@ -202,6 +202,7 @@ class _GpxViewState extends State<GpxView> {
                     child: FlutterMap(
                       mapController: _mapController,
                       options: MapOptions(
+                        maxZoom: 18,
                         center: trackPoints.last,
                         zoom: 10.0,
                         bounds: LatLngBounds.fromPoints(trackPoints),

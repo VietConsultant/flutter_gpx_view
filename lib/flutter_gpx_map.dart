@@ -106,6 +106,7 @@ class _GpxMapState extends State<GpxMap> {
         : FlutterMap(
             mapController: widget.mapController,
             options: MapOptions(
+              maxZoom: 18,
               enableScrollWheel: false,
               onTap: (tapPosition, point) {
                 if (widget.onTapMap != null) {
