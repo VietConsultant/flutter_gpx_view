@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gpx_view/gpx_chart_model.dart';
+import 'package:intl/intl.dart';
 
 class GpxLineChart extends StatefulWidget {
   const GpxLineChart({
@@ -32,6 +33,9 @@ class _GpxLineChartState extends State<GpxLineChart> {
     const Color(0xFF746624),
   ];
 
+  bool showTooltipOnLeft = false;
+  final formatter = NumberFormat.decimalPatternDigits();
+
   Color getColorBySacScaleLevel(
     String t,
   ) {
@@ -54,18 +58,21 @@ class _GpxLineChartState extends State<GpxLineChart> {
   }
 
   String _toolTipTitle(int index) {
-    final String elevation = widget.elevations[index].ele.toStringAsFixed(0);
+    showTooltipOnLeft = index >= widget.elevations.length * 0.75;
+
+    final String elevation = formatter.format(
+      double.parse(widget.elevations[index].ele.toStringAsFixed(0)),
+    );
     final int matchedIndex = widget.gpxSacs.indexWhere(
       (element) =>
           int.parse(element.end) >= index && int.parse(element.start) <= index,
     );
     if (matchedIndex != -1) {
       final gpxSac = widget.gpxSacs[matchedIndex];
-      return 'Height: $elevation\n'
-          'Sac scale: ${gpxSac.t}\n'
-          'Via ferrata scale: ${gpxSac.f}\n'
-          'Visibility: ${gpxSac.v}\n'
-          'Surface: ${gpxSac.s}';
+      return 'Height: ${elevation}m\n'
+          'SAC scale: T${gpxSac.t}\n'
+          'V. Ferrata: ${gpxSac.f}\n'
+          'Vis: ${gpxSac.v} / Surface: ${gpxSac.s}';
     } else {
       return '';
     }
@@ -111,7 +118,11 @@ class _GpxLineChartState extends State<GpxLineChart> {
                 return SideTitleWidget(
                   axisSide: meta.axisSide,
                   child: Text(
-                    hideLabel ? '' : '${value.toInt()}m',
+                    hideLabel
+                        ? ''
+                        : '${formatter.format(
+                            value.toInt(),
+                          )}m',
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.black,
@@ -162,7 +173,14 @@ class _GpxLineChartState extends State<GpxLineChart> {
             widget.onChangePosition?.call(peak.lat, peak.lon);
           },
           touchTooltipData: LineTouchTooltipData(
+            tooltipBgColor: Colors.grey.shade400,
+            tooltipBorder: const BorderSide(color: Colors.black),
             maxContentWidth: 200,
+            tooltipHorizontalOffset: showTooltipOnLeft ? -90 : 0,
+            tooltipPadding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 8,
+            ),
             getTooltipItems: (touchedSpots) {
               return touchedSpots
                   .map(
@@ -170,7 +188,7 @@ class _GpxLineChartState extends State<GpxLineChart> {
                       _toolTipTitle(
                         e.spotIndex.toInt(),
                       ),
-                      Theme.of(context).textTheme.bodyMedium!,
+                      Theme.of(context).textTheme.bodySmall!,
                     ),
                   )
                   .toList();
