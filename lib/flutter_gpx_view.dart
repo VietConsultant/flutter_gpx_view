@@ -207,7 +207,9 @@ class _GpxViewState extends State<GpxView> {
                       options: MapOptions(
                         maxZoom: 18,
                         center: trackPoints.last,
-                        zoom: 10.0,
+                        zoom: 10,
+                        minZoom: 13,
+                        rotationWinGestures: MultiFingerGesture.none,
                         bounds: LatLngBounds.fromPoints(trackPoints),
                         boundsOptions: FitBoundsOptions(
                           padding: widget.boundPadding,

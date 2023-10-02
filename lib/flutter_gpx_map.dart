@@ -107,6 +107,10 @@ class _GpxMapState extends State<GpxMap> {
             mapController: widget.mapController,
             options: MapOptions(
               maxZoom: 18,
+              center: trackPoints.last,
+              zoom: 10,
+              minZoom: 13,
+              rotationWinGestures: MultiFingerGesture.none,
               enableScrollWheel: false,
               onTap: (tapPosition, point) {
                 if (widget.onTapMap != null) {
@@ -114,8 +118,6 @@ class _GpxMapState extends State<GpxMap> {
                   return;
                 }
               },
-              center: trackPoints.first,
-              zoom: 10.0,
               bounds: LatLngBounds.fromPoints(trackPoints),
               boundsOptions: FitBoundsOptions(
                 padding: widget.boundPadding,
