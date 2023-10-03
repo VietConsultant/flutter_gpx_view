@@ -210,6 +210,8 @@ class _GpxViewState extends State<GpxView> {
                         zoom: 10,
                         minZoom: 13,
                         rotationWinGestures: MultiFingerGesture.none,
+                        interactiveFlags:
+                            InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                         bounds: LatLngBounds.fromPoints(trackPoints),
                         boundsOptions: FitBoundsOptions(
                           padding: widget.boundPadding,

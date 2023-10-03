@@ -111,6 +111,8 @@ class _GpxMapState extends State<GpxMap> {
               zoom: 10,
               minZoom: 13,
               rotationWinGestures: MultiFingerGesture.none,
+              interactiveFlags:
+                  InteractiveFlag.pinchZoom | InteractiveFlag.drag,
               enableScrollWheel: false,
               onTap: (tapPosition, point) {
                 if (widget.onTapMap != null) {
