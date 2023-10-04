@@ -109,7 +109,6 @@ class _GpxMapState extends State<GpxMap> {
               maxZoom: 18,
               center: trackPoints.last,
               zoom: 10,
-              minZoom: 13,
               rotationWinGestures: MultiFingerGesture.none,
               interactiveFlags:
                   InteractiveFlag.pinchZoom | InteractiveFlag.drag,

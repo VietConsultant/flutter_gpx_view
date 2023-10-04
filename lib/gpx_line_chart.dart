@@ -189,6 +189,7 @@ class _GpxLineChartState extends State<GpxLineChart> {
                         e.spotIndex.toInt(),
                       ),
                       Theme.of(context).textTheme.bodySmall!,
+                      textAlign: TextAlign.left,
                     ),
                   )
                   .toList();
