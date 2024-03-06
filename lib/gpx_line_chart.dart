@@ -70,7 +70,7 @@ class _GpxLineChartState extends State<GpxLineChart> {
     if (matchedIndex != -1) {
       final gpxSac = widget.gpxSacs[matchedIndex];
       return 'Height: ${elevation}m\n'
-          '${gpxSac.t == '0' ? 'SAC scale: N/A' : 'SAC scale: T${gpxSac.t}\n'}'
+          '${gpxSac.t == '0' ? 'SAC scale: N/A' : 'SAC scale: T${gpxSac.t}'}\n'
           'V. Ferrata: ${gpxSac.f}\n'
           'Vis: ${gpxSac.v} / Surface: ${gpxSac.s}';
     } else {
