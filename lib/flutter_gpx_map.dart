@@ -30,6 +30,7 @@ class GpxMap extends StatefulWidget {
     this.boundPadding = const EdgeInsets.all(20.0),
     this.onTapMap,
     this.mapController,
+    this.showCredit = true,
   });
 
   final String xml;
@@ -39,6 +40,7 @@ class GpxMap extends StatefulWidget {
   final EdgeInsets boundPadding;
   final VoidCallback? onTapMap;
   final MapController? mapController;
+  final bool showCredit;
 
   @override
   State<GpxMap> createState() => _GpxMapState();
@@ -160,56 +162,57 @@ class _GpxMapState extends State<GpxMap> {
                   ),
                 ],
               ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.black38,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 2,
-                    horizontal: 12,
-                  ),
-                  alignment: Alignment.bottomRight,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        const TextSpan(
-                          text: '© ',
-                          style: TextStyle(
-                            color: Colors.white,
+              if (widget.showCredit)
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.black38,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 2,
+                      horizontal: 12,
+                    ),
+                    alignment: Alignment.bottomRight,
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          const TextSpan(
+                            text: '© ',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        TextSpan(
-                          text: 'OpenStreetMap',
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              launchUrl(
-                                Uri.parse(
-                                  'https://www.openstreetmap.org/copyright',
-                                ),
-                              );
-                            },
-                          style: const TextStyle(
-                            decoration: TextDecoration.underline,
-                            decorationColor: Colors.white,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                          TextSpan(
+                            text: 'OpenStreetMap',
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                launchUrl(
+                                  Uri.parse(
+                                    'https://www.openstreetmap.org/copyright',
+                                  ),
+                                );
+                              },
+                            style: const TextStyle(
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.white,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const TextSpan(
-                          text: ' contributors',
-                          style: TextStyle(
-                            decorationColor: Colors.white,
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
+                          const TextSpan(
+                            text: ' contributors',
+                            style: TextStyle(
+                              decorationColor: Colors.white,
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           );
   }
