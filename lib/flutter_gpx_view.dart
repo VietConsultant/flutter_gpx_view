@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gpx_view/flutter_gpx_chart.dart';
 import 'package:flutter_gpx_view/location_service.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:xml/xml.dart' as xml;
 
 class GpxView extends StatefulWidget {
@@ -282,76 +284,130 @@ class _GpxViewState extends State<GpxView> {
                       clipBehavior: Clip.none,
                       reverseDuration: const Duration(milliseconds: 500),
                       alignment: Alignment.bottomCenter,
-                      child: _showChart
-                          ? Container(
-                              width: MediaQuery.sizeOf(context).width,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(24),
-                                  topRight: Radius.circular(24),
-                                ),
-                              ),
-                              child: SafeArea(
-                                top: false,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    CloseButton(
-                                      onPressed: _closeChart,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.black38,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 2,
+                              horizontal: 12,
+                            ),
+                            alignment: Alignment.bottomRight,
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: '© ',
+                                    style: TextStyle(
+                                      color: Colors.white,
                                     ),
-                                    Container(
-                                      clipBehavior: Clip.none,
-                                      height:
-                                          MediaQuery.sizeOf(context).height *
-                                              0.25,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                      ),
-                                      child: GpxChart(
-                                        distances: widget.distances,
-                                        xml: widget.xml,
-                                        onChangePosition: onPanChart,
-                                        showTotal: true,
-                                      ),
+                                  ),
+                                  TextSpan(
+                                    text: 'OpenStreetMap',
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        launchUrl(
+                                          Uri.parse(
+                                            'https://www.openstreetmap.org/copyright',
+                                          ),
+                                        );
+                                      },
+                                    style: const TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: Colors.white,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : Container(
-                              width: MediaQuery.sizeOf(context).width,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(24),
-                                  topRight: Radius.circular(24),
-                                ),
-                              ),
-                              child: SafeArea(
-                                top: false,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      onPressed: _openChart,
-                                      icon: const Icon(
-                                        Icons.keyboard_arrow_up_rounded,
-                                      ),
+                                  ),
+                                  const TextSpan(
+                                    text: ' contributors',
+                                    style: TextStyle(
+                                      decorationColor: Colors.white,
+                                      color: Colors.white,
                                     ),
-                                    const Text(
-                                      'Show Elevation Profile',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
                             ),
+                          ),
+                          _showChart
+                              ? Container(
+                                  width: MediaQuery.sizeOf(context).width,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(24),
+                                      topRight: Radius.circular(24),
+                                    ),
+                                  ),
+                                  child: SafeArea(
+                                    top: false,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        CloseButton(
+                                          onPressed: _closeChart,
+                                        ),
+                                        Container(
+                                          clipBehavior: Clip.none,
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.25,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
+                                          child: GpxChart(
+                                            distances: widget.distances,
+                                            xml: widget.xml,
+                                            onChangePosition: onPanChart,
+                                            showTotal: true,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width: MediaQuery.sizeOf(context).width,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(24),
+                                      topRight: Radius.circular(24),
+                                    ),
+                                  ),
+                                  child: SafeArea(
+                                    top: false,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          onPressed: _openChart,
+                                          icon: const Icon(
+                                            Icons.keyboard_arrow_up_rounded,
+                                          ),
+                                        ),
+                                        const Text(
+                                          'Show Elevation Profile',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

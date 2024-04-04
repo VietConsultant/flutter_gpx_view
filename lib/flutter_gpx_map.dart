@@ -1,8 +1,10 @@
 library flutter_gpx_view;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:xml/xml.dart' as xml;
 
 /// A widget to display GPX data on a map.
@@ -103,53 +105,110 @@ class _GpxMapState extends State<GpxMap> {
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : FlutterMap(
-            mapController: widget.mapController,
-            options: MapOptions(
-              maxZoom: 18,
-              center: trackPoints.last,
-              zoom: 10,
-              rotationWinGestures: MultiFingerGesture.none,
-              interactiveFlags:
-                  InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-              enableScrollWheel: false,
-              onTap: (tapPosition, point) {
-                if (widget.onTapMap != null) {
-                  widget.onTapMap?.call();
-                  return;
-                }
-              },
-              bounds: LatLngBounds.fromPoints(trackPoints),
-              boundsOptions: FitBoundsOptions(
-                padding: widget.boundPadding,
-              ),
-            ),
+        : Stack(
             children: [
-              TileLayer(
-                wmsOptions: WMSTileLayerOptions(
-                  baseUrl: 'https://{s}.s2maps-tiles.eu/wms/?',
-                  layers: const ['s2cloudless-2021_3857'],
+              FlutterMap(
+                mapController: widget.mapController,
+                options: MapOptions(
+                  maxZoom: 18,
+                  center: trackPoints.last,
+                  zoom: 10,
+                  rotationWinGestures: MultiFingerGesture.none,
+                  interactiveFlags:
+                      InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                  enableScrollWheel: false,
+                  onTap: (tapPosition, point) {
+                    if (widget.onTapMap != null) {
+                      widget.onTapMap?.call();
+                      return;
+                    }
+                  },
+                  bounds: LatLngBounds.fromPoints(trackPoints),
+                  boundsOptions: FitBoundsOptions(
+                    padding: widget.boundPadding,
+                  ),
                 ),
-                subdomains: const ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
-                userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-                fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              ),
-              TileLayer(
-                urlTemplate: 'https://maps.refuges.info/hiking/{z}/{x}/{y}.png',
-                userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-                fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              ),
-              PolylineLayer(
-                polylines: [
-                  Polyline(
-                    points: trackPoints,
-                    strokeWidth: widget.polyStrokeWidth,
-                    color: widget.polyColor,
+                children: [
+                  TileLayer(
+                    wmsOptions: WMSTileLayerOptions(
+                      baseUrl: 'https://{s}.s2maps-tiles.eu/wms/?',
+                      layers: const ['s2cloudless-2021_3857'],
+                    ),
+                    subdomains: const ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+                    userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                    fallbackUrl:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  ),
+                  TileLayer(
+                    urlTemplate:
+                        'https://maps.refuges.info/hiking/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                    fallbackUrl:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  ),
+                  PolylineLayer(
+                    polylines: [
+                      Polyline(
+                        points: trackPoints,
+                        strokeWidth: widget.polyStrokeWidth,
+                        color: widget.polyColor,
+                      ),
+                    ],
+                  ),
+                  MarkerLayer(
+                    markers: [...waypoints],
                   ),
                 ],
               ),
-              MarkerLayer(
-                markers: [...waypoints],
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.black38,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2,
+                    horizontal: 12,
+                  ),
+                  alignment: Alignment.bottomRight,
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: '© ',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'OpenStreetMap',
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              launchUrl(
+                                Uri.parse(
+                                  'https://www.openstreetmap.org/copyright',
+                                ),
+                              );
+                            },
+                          style: const TextStyle(
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.white,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const TextSpan(
+                          text: ' contributors',
+                          style: TextStyle(
+                            decorationColor: Colors.white,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ],
           );
